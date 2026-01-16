@@ -86,7 +86,8 @@ vla-robot-cleaning/
 ### Prerequisites
 
 ```bash
-pip install networkx
+conda env create -f environment.yml
+conda activate autopilot
 ```
 
 ### Running a Cleaning Mission
