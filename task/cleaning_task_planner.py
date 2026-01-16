@@ -1,5 +1,18 @@
 from typing import Dict, Any, List
 
+def plan_cleaning_tasks_from_vlm(vlm_output, graph):
+    """
+    Convert VLM output into an ordered task list.
+    """
+
+    target_zones = vlm_output.get("target_zones", [])
+
+    # Filter to zones that actually exist
+    zone_ids = {n["id"] for n in graph["nodes"]}
+    valid_targets = [z for z in target_zones if z in zone_ids]
+
+    # Simple ordering for now (can be extended)
+    return valid_targets
 
 def plan_cleaning_tasks(
     graph: Dict[str, Any],
