@@ -3,20 +3,73 @@
     { "id": "dock", "type": "service", "tags": ["charging", "storage"] },
     { "id": "check_in", "type": "service", "tags": ["reception"] },
 
-    { "id": "concourse_west", "type": "concourse", "tags": ["main_corridor", "high_traffic"] },
-    { "id": "concourse_east", "type": "concourse", "tags": ["main_corridor", "high_traffic"] },
+    {
+      "id": "concourse_west",
+      "type": "concourse",
+      "tags": ["main_corridor", "high_traffic"]
+    },
+    {
+      "id": "concourse_east",
+      "type": "concourse",
+      "tags": ["main_corridor", "high_traffic"]
+    },
 
-    { "id": "courts_1_2", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
-    { "id": "courts_3_4", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
-    { "id": "courts_5_6", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
-    { "id": "courts_7", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "low" },
-    { "id": "courts_8", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
+    {
+      "id": "courts_1_2",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
+    {
+      "id": "courts_3_4",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
+    {
+      "id": "courts_5_6",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
+    {
+      "id": "courts_7",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "low"
+    },
+    {
+      "id": "courts_8",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
 
-    { "id": "championship_court", "type": "cleaning_zone", "tags": ["sports_court", "high_priority"], "priority": "high" },
+    {
+      "id": "championship_court",
+      "type": "cleaning_zone",
+      "tags": ["sports_court", "high_priority"],
+      "priority": "high"
+    },
 
-    { "id": "courts_10_11", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
-    { "id": "courts_12_13", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "medium" },
-    { "id": "courts_14", "type": "cleaning_zone", "tags": ["sports_court"], "priority": "low" },
+    {
+      "id": "courts_10_11",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
+    {
+      "id": "courts_12_13",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "medium"
+    },
+    {
+      "id": "courts_14",
+      "type": "cleaning_zone",
+      "tags": ["sports_court"],
+      "priority": "low"
+    },
 
     { "id": "seating_area", "type": "facility", "tags": ["seating"] },
     { "id": "kitchen", "type": "facility", "tags": ["food_service"] },
@@ -26,71 +79,224 @@
     { "id": "exit_east", "type": "exit", "tags": ["emergency_exit"] }
   ],
   "edges": [
-  { "from": "dock", "to": "check_in", "skill": "navigate_service_corridor", "base_cost": 1.0 },
-  { "from": "check_in", "to": "concourse_west", "skill": "enter_concourse", "base_cost": 1.0 },
+    {
+      "from": "dock",
+      "to": "check_in",
+      "skill": "navigate_service_corridor",
+      "base_cost": 1.0
+    },
+    {
+      "from": "check_in",
+      "to": "dock",
+      "skill": "navigate_service_corridor",
+      "base_cost": 1.0
+    },
+    {
+      "from": "check_in",
+      "to": "concourse_west",
+      "skill": "enter_concourse",
+      "base_cost": 1.0
+    },
 
-  { "from": "concourse_west", "to": "concourse_east", "skill": "follow_corridor", "base_cost": 2.5 },
-  { "from": "concourse_east", "to": "concourse_west", "skill": "follow_corridor", "base_cost": 2.5 },
+    {
+      "from": "concourse_west",
+      "to": "concourse_east",
+      "skill": "follow_corridor",
+      "base_cost": 2.5
+    },
+    {
+      "from": "concourse_east",
+      "to": "concourse_west",
+      "skill": "follow_corridor",
+      "base_cost": 2.5
+    },
 
-  { "from": "concourse_west", "to": "courts_1_2", "skill": "enter_zone", "base_cost": 1.2 },
-  { "from": "concourse_west", "to": "courts_3_4", "skill": "enter_zone", "base_cost": 1.2 },
+    {
+      "from": "concourse_west",
+      "to": "courts_1_2",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "concourse_west",
+      "to": "courts_3_4",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
 
-  { "from": "concourse_east", "to": "courts_5_6", "skill": "enter_zone", "base_cost": 1.2 },
+    {
+      "from": "concourse_east",
+      "to": "courts_5_6",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
 
-  {
-    "from": "concourse_east",
-    "to": "courts_7",
-    "skill": "enter_zone",
-    "base_cost": 1.3,
-    "reliability": 0.6
-  },
+    {
+      "from": "concourse_east",
+      "to": "courts_7",
+      "skill": "enter_zone",
+      "base_cost": 1.3,
+      "reliability": 0.6
+    },
+    {
+      "from": "concourse_west",
+      "to": "check_in",
+      "skill": "exit_concourse",
+      "base_cost": 1.0
+    },
+    {
+      "from": "check_in",
+      "to": "dock",
+      "skill": "navigate_service_corridor",
+      "base_cost": 1.0
+    },
 
-  { "from": "concourse_east", "to": "courts_8", "skill": "enter_zone", "base_cost": 1.2 },
+    {
+      "from": "concourse_east",
+      "to": "courts_8",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
 
-  {
-    "from": "concourse_east",
-    "to": "championship_court",
-    "skill": "enter_zone",
-    "base_cost": 1.0,
-    "reliability": 0.5
-  },
+    {
+      "from": "concourse_east",
+      "to": "championship_court",
+      "skill": "enter_zone",
+      "base_cost": 1.0,
+      "reliability": 0.5
+    },
 
-  { "from": "concourse_east", "to": "courts_10_11", "skill": "enter_zone", "base_cost": 1.2 },
-  { "from": "concourse_east", "to": "courts_12_13", "skill": "enter_zone", "base_cost": 1.2 },
+    {
+      "from": "concourse_east",
+      "to": "courts_10_11",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "concourse_east",
+      "to": "courts_12_13",
+      "skill": "enter_zone",
+      "base_cost": 1.2
+    },
 
-  {
-    "from": "concourse_east",
-    "to": "courts_14",
-    "skill": "enter_zone",
-    "base_cost": 1.3,
-    "reliability": 0.7
-  },
+    {
+      "from": "concourse_east",
+      "to": "courts_14",
+      "skill": "enter_zone",
+      "base_cost": 1.3,
+      "reliability": 0.7
+    },
 
-  {
-    "from": "concourse_west",
-    "to": "seating_area",
-    "skill": "enter_facility",
-    "base_cost": 0.8,
-    "reliability": 0.7
-  },
+    {
+      "from": "concourse_west",
+      "to": "seating_area",
+      "skill": "enter_facility",
+      "base_cost": 0.8,
+      "reliability": 0.7
+    },
 
-  {
-    "from": "seating_area",
-    "to": "kitchen",
-    "skill": "enter_facility",
-    "base_cost": 0.6,
-    "reliability": 0.6
-  },
+    {
+      "from": "seating_area",
+      "to": "kitchen",
+      "skill": "enter_facility",
+      "base_cost": 0.6,
+      "reliability": 0.6
+    },
 
-  {
-    "from": "concourse_west",
-    "to": "restrooms",
-    "skill": "enter_facility",
-    "base_cost": 0.7,
-    "reliability": 0.65
-  },
+    {
+      "from": "concourse_west",
+      "to": "restrooms",
+      "skill": "enter_facility",
+      "base_cost": 0.7,
+      "reliability": 0.65
+    },
 
-  { "from": "concourse_west", "to": "exit_west", "skill": "navigate_exit", "base_cost": 0.5 },
-  { "from": "concourse_east", "to": "exit_east", "skill": "navigate_exit", "base_cost": 0.5 }
-]
+    {
+      "from": "concourse_west",
+      "to": "exit_west",
+      "skill": "navigate_exit",
+      "base_cost": 0.5
+    },
+    {
+      "from": "concourse_east",
+      "to": "exit_east",
+      "skill": "navigate_exit",
+      "base_cost": 0.5
+    },
+    {
+      "from": "courts_1_2",
+      "to": "concourse_west",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "courts_3_4",
+      "to": "concourse_west",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+
+    {
+      "from": "courts_5_6",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "courts_7",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.3
+    },
+    {
+      "from": "courts_8",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+
+    {
+      "from": "championship_court",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.0
+    },
+
+    {
+      "from": "courts_10_11",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "courts_12_13",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.2
+    },
+    {
+      "from": "courts_14",
+      "to": "concourse_east",
+      "skill": "exit_zone",
+      "base_cost": 1.3
+    },
+    {
+      "from": "seating_area",
+      "to": "concourse_west",
+      "skill": "exit_facility",
+      "base_cost": 0.8
+    },
+    {
+      "from": "kitchen",
+      "to": "seating_area",
+      "skill": "exit_facility",
+      "base_cost": 0.6
+    },
+    {
+      "from": "restrooms",
+      "to": "concourse_west",
+      "skill": "exit_facility",
+      "base_cost": 0.7
+    }
+  ]
 }
