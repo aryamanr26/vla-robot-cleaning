@@ -6,9 +6,15 @@ from planning.astar_planner import NetworkXAStarPlanner
 from task.cleaning_task_planner import plan_cleaning_tasks
 
 # --- VLM imports (INTENTIONALLY NOT USED AT RUNTIME) ---
-# These are placeholders for future VLM/VLA integration
+# Placeholders for future VLM/VLA integration
 from vlm.vlm_task_grounder import VLMTaskGrounder
 from task.cleaning_task_planner import plan_cleaning_tasks_from_vlm
+
+# --- OEM Abstraction (MOCK ONLY) ---
+from oem.mock_robot import MockRobot
+
+# --- Console UI helpers ---
+from ui.console import banner, section, log, ok, fail
 
 
 def simulate_edge_execution(edge):
@@ -18,22 +24,28 @@ def simulate_edge_execution(edge):
 
 
 def main():
+    banner("Autonomous Cleaning Mission")
+
     # -----------------------------
     # LOAD WORLD MODEL
     # -----------------------------
     with open("world_model/topological_graph.json") as f:
         graph = json.load(f)
+    log("World model loaded")
+
+    # -----------------------------
+    # INITIALIZE ROBOT (OEM-AGNOSTIC)
+    # -----------------------------
+    robot = MockRobot()
+    robot.connect()
+    log("Robot connected (mock)")
 
     # -----------------------------
     # TASK PLANNING (STATIC POLICY)
     # -----------------------------
     # NOTE:
-    # In a full VLA system, this task list would be generated
-    # by a Vision-Language Model (VLM) based on human instructions.
-    #
-    # For this challenge, we intentionally use a deterministic,
-    # policy-based planner to keep the system executable without
-    # external model dependencies.
+    # VLM-based task grounding is intentionally disabled
+    # for this challenge to ensure executability.
     #
     # Example (disabled):
     # vlm = VLMTaskGrounder()
@@ -42,9 +54,9 @@ def main():
 
     task_list = plan_cleaning_tasks(graph, policy="priority_first")
 
-    print("\nPlanned cleaning order:")
-    for z in task_list:
-        print(f" - {z}")
+    section("Planned Cleaning Order")
+    for i, z in enumerate(task_list, 1):
+        log(f"{i}. {z}")
 
     # -----------------------------
     # NAVIGATION PLANNER
@@ -62,48 +74,58 @@ def main():
     # EXECUTE TASKS SEQUENTIALLY
     # -----------------------------
     for goal in task_list:
-        print(f"\n=== Navigating to clean: {goal} ===")
+        section(f"Navigating to clean: {goal}")
 
         while current != goal:
             try:
                 plan = planner.plan(graph, current, goal, context)
             except nx.NetworkXNoPath:
-                print(f"No path from {current} to {goal}, skipping zone.")
+                fail(f"No path from {current} to {goal}, skipping zone")
                 break
 
             next_edge = plan.edges[0]
-            print(f"Attempting: {next_edge['from']} → {next_edge['to']}")
+            log(f"Navigate {next_edge['from']} -> {next_edge['to']}")
 
             success = simulate_edge_execution(next_edge)
 
             if success:
-                print("✓ Success")
+                ok(f"Reached {next_edge['to']}")
+                robot.navigate_to_node(next_edge["to"])
                 current = next_edge["to"]
             else:
-                print("✗ FAILED, replanning")
+                fail("Traversal failed, replanning")
                 context["blocked_edges"].append(
                     (next_edge["from"], next_edge["to"])
                 )
 
-        print(f"✓ Finished cleaning zone: {goal}")
+        # -----------------------------
+        # CLEANING EXECUTION (ABSTRACTED)
+        # -----------------------------
+        log("Start cleaning (zone_clean)")
+        robot.start_cleaning(mode="zone_clean")
+        robot.stop_cleaning()
+        ok(f"Zone cleaned: {goal}")
 
     # -----------------------------
     # RETURN TO DOCK
     # -----------------------------
-    print("\nAll assigned zones cleaned. Returning to dock.")
+    section("Return to Dock")
 
     if current != "dock":
         while current != "dock":
             try:
                 plan = planner.plan(graph, current, "dock", context)
             except nx.NetworkXNoPath:
-                print("No path back to dock. Manual intervention required.")
+                fail("No path back to dock. Manual intervention required.")
                 return
 
             next_edge = plan.edges[0]
+            log(f"Navigate {next_edge['from']} -> {next_edge['to']}")
+            robot.navigate_to_node(next_edge["to"])
             current = next_edge["to"]
 
-    print("✓ Docked successfully.")
+    ok("Docked successfully")
+    banner("Mission Complete")
 
 
 if __name__ == "__main__":
