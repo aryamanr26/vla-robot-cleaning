@@ -18,15 +18,29 @@ def compute_edge_cost(
 
     cost = float(edge.get("base_cost", 1.0))
 
-    # Example: if task is "clean", make it slightly cheaper to go toward high priority zones
+    # Task-level preference (high-level reasoning)
     if task == "clean":
         dst = node_by_id.get(edge["to"], {})
         priority = dst.get("priority")
         if priority in PRIORITY_TO_PENALTY:
             cost += PRIORITY_TO_PENALTY[priority]
 
-    # Example: add penalties for risky skills in crowded mode
+    # Contextual penalty (crowds, time of day, etc.)
     if context.get("crowded", False) and edge.get("skill") == "enter_zone":
         cost += 0.3
+
+    # -------------------------------
+    # EXECUTION-LEVEL RISK MODELING
+    # -------------------------------
+
+    # Reliability penalty (only if specified in JSON)
+    reliability = edge.get("reliability", 1.0)
+    cost += (1.0 - reliability) * 3.0
+
+    # Temporary block from failed execution
+    blocked = context.get("blocked_edges", [])
+    edge_id = (edge["from"], edge["to"])
+    if edge_id in blocked:
+        cost += 100.0  # effectively disables this edge
 
     return max(0.01, cost)

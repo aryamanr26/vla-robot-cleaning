@@ -1,22 +1,45 @@
 import json
+import random
 from planning.astar_planner import NetworkXAStarPlanner
 
 
+def simulate_edge_execution(edge):
+    reliability = edge.get("reliability", 1.0)
+    return random.random() < reliability
+
+
 def main():
-    with open("world_model/topological_graph.json", "r") as f:
+    with open("world_model/topological_graph.json") as f:
         graph = json.load(f)
 
     planner = NetworkXAStarPlanner()
 
-    context = {"task": "clean", "crowded": True}
-    result = planner.plan(graph, start="dock", goal="championship_court", context=context)
+    context = {
+        "task": "clean",
+        "blocked_edges": []
+    }
 
-    print("Node path:")
-    print(" -> ".join(result.nodes))
+    current = "dock"
+    goal = "championship_court"
 
-    print("\nEdge skills:")
-    for e in result.edges:
-        print(f'{e["from"]} -> {e["to"]} | skill={e["skill"]} | cost={e["cost"]:.2f}')
+    while current != goal:
+        plan = planner.plan(graph, current, goal, context)
+
+        next_edge = plan.edges[0]
+        print(f"\nAttempting: {next_edge['from']} → {next_edge['to']}")
+
+        success = simulate_edge_execution(next_edge)
+
+        if success:
+            print("✓ Success")
+            current = next_edge["to"]
+        else:
+            print("✗ FAILED, replanning")
+            context["blocked_edges"].append(
+                (next_edge["from"], next_edge["to"])
+            )
+
+    print("\nReached goal!")
 
 
 if __name__ == "__main__":
